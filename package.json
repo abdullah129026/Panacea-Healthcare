@@ -1,0 +1,39 @@
+{
+  "name": "panacea-portal",
+  "version": "1.0.0",
+  "description": "Panacea Portal — Clinical Operations Management Platform",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix frontend\" \"npm run dev --prefix backend\"",
+    "dev:frontend": "npm run dev --prefix frontend",
+    "dev:backend": "npm run dev --prefix backend",
+    "build": "npm run build --prefix frontend && npm run build --prefix backend",
+    "build:frontend": "npm run build --prefix frontend",
+    "build:backend": "npm run build --prefix backend",
+    "start": "npm run start --prefix backend",
+    "start:frontend": "npm run start --prefix frontend",
+    "lint": "npm run lint --prefix frontend && npm run lint --prefix backend",
+    "typecheck": "npm run typecheck --prefix frontend && npm run typecheck --prefix backend",
+    "test": "npm run test --prefix frontend && npm run test --prefix backend",
+    "test:frontend": "npm run test --prefix frontend",
+    "test:backend": "npm run test --prefix backend",
+    "test:e2e": "npm run test:e2e --prefix frontend",
+    "clean": "rimraf frontend/.next frontend/dist frontend/node_modules backend/dist backend/node_modules"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.0",
+    "rimraf": "^5.0.0"
+  },
+  "keywords": [
+    "clinical",
+    "healthcare",
+    "operations",
+    "management",
+    "multi-tenant",
+    "nextjs",
+    "express",
+    "postgresql"
+  ],
+  "author": "Panacea Team",
+  "license": "PROPRIETARY"
+}

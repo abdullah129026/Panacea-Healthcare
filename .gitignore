@@ -1,0 +1,200 @@
+# ==================== ENVIRONMENT & SECRETS ====================
+# CRITICAL: Never commit environment files with credentials/passwords/API keys
+
+# Environment variables (local development)
+.env
+.env.local
+.env.*.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Specific project env files
+frontend/.env.local
+panacea-api/.env.local
+frontend/.env.*.local
+panacea-api/.env.*.local
+
+# ==================== DOCUMENTATION (MARKDOWN) ====================
+# Exclude all .md files throughout the project
+# These contain setup/deployment info with potentially sensitive URLs
+
+**/*.md
+*.md
+
+# Exception: Keep ONLY essential files (commented out - uncomment if needed)
+# !README.md
+# !CONTRIBUTING.md
+
+# ==================== CREDENTIALS & SENSITIVE FILES ====================
+# Files that might contain passwords, API keys, tokens, or personal info
+
+# Config files with secrets
+config.json
+config.*.json
+secrets.json
+.secrets/
+secrets/
+credentials.json
+credentials/
+.aws/
+.azure/
+
+# API keys and tokens
+*.key
+*.pem
+*.pfx
+*.p12
+*.keystore
+*.jks
+
+# SSH/GPG keys
+.ssh/
+.gnupg/
+id_rsa
+id_rsa.pub
+id_dsa
+id_ecdsa
+id_ed25519
+
+# Database backups with data
+*.sql
+*.dump
+*.backup
+*.bak
+
+# Cloud provider credentials
+gcloud/
+firebase-key.json
+google-cloud-key.json
+aws-credentials.json
+
+# ==================== DEPENDENCIES ====================
+# Node.js dependencies and lock files
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+npm-shrinkwrap.json
+
+# ==================== BUILD & DISTRIBUTION ====================
+# Compiled/built files (never commit build outputs)
+dist/
+build/
+.next/
+out/
+*.js.map
+*.css.map
+coverage/
+.nyc_output/
+
+# Build artifacts
+*.o
+*.a
+*.so
+*.dylib
+*.exe
+*.dll
+*.class
+*.jar
+
+# ==================== IDE & EDITOR ====================
+# Editor configuration files
+.vscode/
+.idea/
+.DS_Store
+*.swp
+*.swo
+*~
+.sublime-project
+.sublime-workspace
+*.iml
+.env.iml
+*.project
+.classpath
+.c9/
+*.launch
+.settings/
+.tern-port
+
+# WebStorm
+.WebStorm*/
+.IntelliJIdea*/
+
+# VS Code
+.vs/
+*.code-workspace
+
+# ==================== TESTING ====================
+# Test coverage and temporary test files
+coverage/
+.coverage
+.nyc_output/
+htmlcov/
+.pytest_cache/
+.tox/
+
+# ==================== LOGS ====================
+# Log files (may contain sensitive debugging info)
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# ==================== TEMPORARY & CACHE ====================
+# Temporary files
+*.tmp
+*.temp
+.tmp/
+.cache/
+.parcel-cache/
+
+# OS temporary files
+Thumbs.db
+.Thumbs.db
+desktop.ini
+
+# npm cache
+.npm/
+.node_repl_history
+
+# yarn cache
+.yarn/cache/
+.yarn/unplugged/
+.yarn/build-state.yml
+.yarn/install-state.gz
+.pnp.*
+
+# ==================== DEVELOPMENT ARTIFACTS ====================
+# Local development artifacts
+.vagrant/
+.venv/
+venv/
+env/
+ENV/
+.env.backup
+
+# Docker
+.docker/
+docker-compose.override.yml
+
+# Database files
+*.sqlite
+*.sqlite3
+*.db
+
+# ==================== MISCELLANEOUS ====================
+# Misc files that shouldn't be committed
+*.bak
+.DS_Store
+Thumbs.db
+
+# Directories that might contain secrets
+/secrets/
+/keys/
+/.ssh/
+/.aws/
+/config/private/

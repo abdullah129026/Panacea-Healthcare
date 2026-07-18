@@ -1,0 +1,346 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================================================
+// CLINIC (Tenant)
+// ============================================================================
+model Clinic {
+  id            String   @id @default(uuid())
+  name          String
+  address       String?
+  phone         String?
+  email         String?
+  operatingHours String? // JSON string with hours
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deactivatedAt DateTime?
+
+  // Relations
+  users         User[]
+  members       ClinicMember[]
+  invites       ClinicInvite[]
+  patients      Patient[]
+  appointments  Appointment[]
+  medicalRecords MedicalRecord[]
+  invoices      Invoice[]
+  inventory     InventoryItem[]
+  riskScores    RiskScore[]
+  auditLogs     AuditLog[]
+
+  @@index([deactivatedAt])
+}
+
+// ============================================================================
+// USER
+// ============================================================================
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  passwordHash    String
+  name            String
+  title           String?
+  role            String   @default("clinician") // clinician, admin, support, billing
+  clinicId        String
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  twoFactorEnabled Boolean @default(false)
+  twoFactorSecret  String?
+  twoFactorMethod  String? // authenticator, sms
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deactivatedAt   DateTime?
+
+  // Relations
+  sessions        Session[]
+  auditLogs       AuditLog[]
+  appointments    Appointment[] @relation("AppointmentDoctor")
+
+  @@index([clinicId])
+  @@index([email])
+  @@index([deactivatedAt])
+}
+
+// ============================================================================
+// CLINIC MEMBER (Team Access)
+// ============================================================================
+model ClinicMember {
+  id            String   @id @default(uuid())
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  userId        String
+  role          String   // clinician, admin, support, billing
+  joinedAt      DateTime @default(now())
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  deactivatedAt DateTime?
+
+  @@unique([clinicId, userId])
+  @@index([clinicId])
+  @@index([userId])
+  @@index([deactivatedAt])
+}
+
+// ============================================================================
+// CLINIC INVITE (Pending Invitations)
+// ============================================================================
+model ClinicInvite {
+  id            String   @id @default(uuid())
+  clinicId      String
+  clinic        Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  email         String
+  role          String   // clinician, admin, support, billing
+  token         String   @unique
+  expiresAt     DateTime
+  acceptedAt    DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@unique([clinicId, email])
+  @@index([clinicId])
+  @@index([email])
+  @@index([expiresAt])
+}
+
+// ============================================================================
+// PATIENT
+// ============================================================================
+model Patient {
+  id              String   @id @default(uuid())
+  clinicId        String
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  name            String
+  email           String?
+  phone           String?
+  dateOfBirth     DateTime?
+  gender          String?  // male, female, other
+  address         String?
+  condition       String?
+  department      String?
+  status          String   @default("active") // active, inactive, discharged
+  insuranceId     String?
+  bloodType       String?
+  allergies       String?
+  notes           String?
+  vitals          Json?    // Store vitals as JSON object
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deactivatedAt   DateTime?
+
+  // Relations
+  appointments    Appointment[]
+  medicalRecords  MedicalRecord[]
+  riskScores      RiskScore[]
+  invoices        Invoice[]
+
+  @@index([clinicId])
+  @@index([email])
+  @@index([status])
+  @@index([deactivatedAt])
+}
+
+// ============================================================================
+// APPOINTMENT
+// ============================================================================
+model Appointment {
+  id              String   @id @default(uuid())
+  clinicId        String
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  patientId       String
+  patient         Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+  doctorId        String
+  doctor          User     @relation("AppointmentDoctor", fields: [doctorId], references: [id], onDelete: Restrict)
+
+  title           String
+  description     String?
+  startTime       DateTime
+  endTime         DateTime
+  status          String   @default("scheduled") // scheduled, completed, cancelled, no-show
+  type            String?  // consultation, checkup, procedure, follow-up
+  notes           String?
+  room            String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  cancelledAt     DateTime?
+
+  @@index([clinicId])
+  @@index([patientId])
+  @@index([doctorId])
+  @@index([startTime])
+  @@index([status])
+}
+
+// ============================================================================
+// MEDICAL RECORD
+// ============================================================================
+model MedicalRecord {
+  id              String   @id @default(uuid())
+  clinicId        String
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  patientId       String
+  patient         Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  name            String
+  type            String   // report, prescription, lab-result, imaging, other
+  category        String?  // diagnosis, treatment, lab, imaging
+  fileUrl         String   // Cloudinary or S3 URL
+  fileSize        Int?
+  mimeType        String?
+  uploadedBy      String?
+  uploadedAt      DateTime @default(now())
+  notes           String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+
+  @@index([clinicId])
+  @@index([patientId])
+  @@index([type])
+  @@index([category])
+  @@index([uploadedAt])
+}
+
+// ============================================================================
+// INVOICE
+// ============================================================================
+model Invoice {
+  id              String   @id @default(uuid())
+  clinicId        String
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  patientId       String
+  patient         Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  invoiceNumber   String
+  status          String   @default("draft") // draft, sent, paid, overdue, cancelled
+  totalAmount     Float
+  paidAmount      Float    @default(0)
+  currency        String   @default("USD")
+  dueDate         DateTime?
+  paidAt          DateTime?
+  lineItems       Json     // Array of {description, quantity, unitPrice, amount}
+  notes           String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([clinicId, invoiceNumber])
+  @@index([clinicId])
+  @@index([patientId])
+  @@index([status])
+  @@index([dueDate])
+}
+
+// ============================================================================
+// INVENTORY ITEM
+// ============================================================================
+model InventoryItem {
+  id              String   @id @default(uuid())
+  clinicId        String
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+
+  name            String
+  sku             String?
+  category        String?
+  quantity        Int
+  reorderLevel    Int      @default(10)
+  unit            String?  // boxes, units, ml, etc.
+  supplier        String?
+  cost            Float?
+  status          String   @default("in-stock") // in-stock, low-stock, out-of-stock
+  expiryDate      DateTime?
+  notes           String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
+
+  @@unique([clinicId, sku])
+  @@index([clinicId])
+  @@index([status])
+  @@index([category])
+  @@index([expiryDate])
+}
+
+// ============================================================================
+// RISK SCORE (AI CDS Output)
+// ============================================================================
+model RiskScore {
+  id              String   @id @default(uuid())
+  clinicId        String
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  patientId       String
+  patient         Patient  @relation(fields: [patientId], references: [id], onDelete: Cascade)
+
+  analysisTitle   String
+  riskLevel       String   @default("medium") // low, medium, high, critical
+  score           Float    // 0-100
+  factors         Json     // Array of {factor, score, weight}
+  recommendations String?
+  analysisDate    DateTime @default(now())
+  createdBy       String?
+
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([clinicId])
+  @@index([patientId])
+  @@index([riskLevel])
+  @@index([analysisDate])
+}
+
+// ============================================================================
+// SESSION (Refresh tokens / Session management)
+// ============================================================================
+model Session {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  refreshToken    String   @unique
+  expiresAt       DateTime
+  ipAddress       String?
+  userAgent       String?
+  createdAt       DateTime @default(now())
+  revokedAt       DateTime?
+
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+// ============================================================================
+// AUDIT LOG (HIPAA Compliance)
+// ============================================================================
+model AuditLog {
+  id              String   @id @default(uuid())
+  clinicId        String
+  clinic          Clinic   @relation(fields: [clinicId], references: [id], onDelete: Cascade)
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  entity          String   // Patient, Appointment, User, Invoice, etc.
+  entityId        String
+  action          String   // create, read, update, delete
+  changes         Json?    // {before: {...}, after: {...}}
+  reason          String?
+
+  createdAt       DateTime @default(now())
+
+  @@index([clinicId])
+  @@index([userId])
+  @@index([entity])
+  @@index([entityId])
+  @@index([action])
+  @@index([createdAt])
+}

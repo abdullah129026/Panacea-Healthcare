@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Geist:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+:root {
+  /* Sidebar */
+  --sidebar: #FFFFFF;
+  --sidebar-foreground: #3c4a42;
+  --sidebar-primary: #0b1c30;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-border: #bbcabf;
+  --sidebar-accent: #e7f2ec;
+  --sidebar-accent-foreground: #006c49;
+  --sidebar-ring: #006c49;
+
+  /* Core */
+  --background: #f8f9ff;
+  --foreground: #0b1c30;
+  --card: #FFFFFF;
+  --card-foreground: #0b1c30;
+  --popover: #FFFFFF;
+  --popover-foreground: #0b1c30;
+  --primary: #006c49;
+  --primary-foreground: #FFFFFF;
+  --secondary: #eff4ff;
+  --secondary-foreground: #0b1c30;
+  --muted: #f1f5f9;
+  --muted-foreground: #6c7a71;
+  --accent: #eff4ff;
+  --accent-foreground: #0b1c30;
+  --destructive: #D93C15;
+  --border: #bbcabf;
+  --input: #bbcabf;
+  --ring: #006c49;
+  --white: #FFFFFF;
+  --black: #000000;
+
+  /* Status colors */
+  --color-success: #DFE6E1;
+  --color-success-foreground: #004D1A;
+  --color-warning: #E9E3D8;
+  --color-warning-foreground: #804200;
+  --color-error: #E5DCDA;
+  --color-error-foreground: #8C1C00;
+  --color-info: #eff4ff;
+  --color-info-foreground: #0058be;
+
+  /* Radius */
+  --radius-none: 0px;
+  --radius-m: 16px;
+  --radius-pill: 999px;
+
+  /* Fonts */
+  --font-primary: 'Manrope', sans-serif;
+  --font-secondary: 'Inter', sans-serif;
+}
+
+.dark {
+  --sidebar: #18181b;
+  --sidebar-foreground: #fafafa;
+  --sidebar-primary: #18181b;
+  --sidebar-primary-foreground: #fafafa;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-accent: #2a2a30;
+  --sidebar-accent-foreground: #fafafa;
+
+  --background: #111111;
+  --foreground: #FFFFFF;
+  --card: #1A1A1A;
+  --card-foreground: #FFFFFF;
+  --popover: #1A1A1A;
+  --popover-foreground: #FFFFFF;
+  --primary: #10b981;
+  --primary-foreground: #00291a;
+  --secondary: #2E2E2E;
+  --secondary-foreground: #FFFFFF;
+  --muted: #2E2E2E;
+  --muted-foreground: #B8B9B6;
+  --accent: #111111;
+  --accent-foreground: #F2F3F0;
+  --destructive: #FF5C33;
+  --border: #2E2E2E;
+  --input: #2E2E2E;
+  --ring: #666666;
+
+  --color-success: #222924;
+  --color-success-foreground: #B6FFCE;
+  --color-warning: #291C0F;
+  --color-warning-foreground: #FF8400;
+  --color-error: #24100B;
+  --color-error-foreground: #FF5C33;
+  --color-info: #222229;
+  --color-info-foreground: #B2B2FF;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-success: var(--color-success);
+  --color-success-foreground: var(--color-success-foreground);
+  --color-warning: var(--color-warning);
+  --color-warning-foreground: var(--color-warning-foreground);
+  --color-error: var(--color-error);
+  --color-error-foreground: var(--color-error-foreground);
+  --color-info: var(--color-info);
+  --color-info-foreground: var(--color-info-foreground);
+  --font-sans: var(--font-secondary);
+  --font-mono: var(--font-primary);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-secondary);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted-foreground);
+}
